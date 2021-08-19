@@ -1,8 +1,13 @@
 package com.epam.izh.rd.online.service;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 
 public class SimpleDateService implements DateService {
 
@@ -14,7 +19,7 @@ public class SimpleDateService implements DateService {
      */
     @Override
     public String parseDate(LocalDate localDate) {
-        return null;
+        return localDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
     /**
@@ -25,7 +30,8 @@ public class SimpleDateService implements DateService {
      */
     @Override
     public LocalDateTime parseString(String string) {
-        return null;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return LocalDateTime.parse(string, dateTimeFormatter);
     }
 
     /**
@@ -37,7 +43,7 @@ public class SimpleDateService implements DateService {
      */
     @Override
     public String convertToCustomFormat(LocalDate localDate, DateTimeFormatter formatter) {
-        return null;
+        return localDate.format(formatter);
     }
 
     /**
@@ -47,7 +53,16 @@ public class SimpleDateService implements DateService {
      */
     @Override
     public long getNextLeapYear() {
-        return 0;
+        Year year = Year.now();
+        boolean nextYearLeapFound = false;
+        while (!nextYearLeapFound) {
+            if (year.isLeap()) {
+                nextYearLeapFound = true;
+            } else {
+                year = year.plusYears(1);
+            }
+        }
+        return year.getValue();
     }
 
     /**
@@ -57,7 +72,9 @@ public class SimpleDateService implements DateService {
      */
     @Override
     public long getSecondsInYear(int year) {
-        return 0;
+        Temporal temp1 = LocalDateTime.of(year, Month.JANUARY, 1, 0, 0);
+        Temporal temp2 = LocalDateTime.of(year + 1, Month.JANUARY, 1, 0, 0);
+        return ChronoUnit.SECONDS.between(temp1, temp2);
     }
 
 
